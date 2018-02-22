@@ -4,18 +4,38 @@
  * que indica en qué estado se encuentra el juego
  */
 var MemoryGame = MemoryGame || {};
-
+var GuideConv = ["8-ball", "back", "potato", "dinosaur", "kronos",
+		"rocket", "unicorn", "guy", "zeppelin"];
+var board = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 /**
  * Constructora de MemoryGame
  */
 MemoryGame = function(gs) {
 
-	this.InitGame = function(){
+	this.initGame = function(gs){
+		
+		var numUsos = [0,0,0,0,0,0,0,0];
+
+		for(i = 0; i < 16; i++){
+
+			while(board[i] == 0){
+				var rand = Math.floor(Math.random() * 8)
+				if(numUsos[rand] < 2){
+					board[i] = GuideConv[rand];
+					numUsos[rand]++;
+				}
+			}
+
+		}
+		this.draw();
 
 	}
 
 	this.draw = function(){
-
+		gs.drawMessage("Playing");
+		for (i = 0; i < 16; i++){
+			gs.draw( board[i] , i)
+		}
 	}
 
 	this.loop = function(){
@@ -28,6 +48,24 @@ MemoryGame = function(gs) {
 
 	this.onClick = function(){
 
+
+	}
+
+	this.randomInit = function(){
+
+		var numUsos = [0,0,0,0,0,0,0,0];
+
+		for(i = 0; i < 16; i++){
+
+			while(board[i] == undefined){
+				var rand = Math.floor(Math.random() * 8)
+				if(numUsos[rand] < 2){
+					board[i] = GuideConv[rand];
+					numUsos[rand]++;
+				}
+			}
+
+		}
 
 	}
 
@@ -65,6 +103,6 @@ MemoryGameCard = function(id) {
 
 	this.draw = function(gs, pos){
 
-		
+
 	}
 };
