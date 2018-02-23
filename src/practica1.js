@@ -4,37 +4,31 @@
  * que indica en qué estado se encuentra el juego
  */
 var MemoryGame = MemoryGame || {};
-var GuideConv = ["8-ball", "back", "potato", "dinosaur", "kronos",
-		"rocket", "unicorn", "guy", "zeppelin"];
-var board = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+
 /**
  * Constructora de MemoryGame
  */
 MemoryGame = function(gs) {
 
-	this.initGame = function(gs){
+	var GuideConv = ["8-ball", "potato", "dinosaur", "kronos",
+		"rocket", "unicorn", "guy", "zeppelin"];
+	this.totalScore = 0;
+	this.GraphicServer = gs;
+	this.board = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+	this.initGame = function(){
 		
-		var numUsos = [0,0,0,0,0,0,0,0];
-
-		for(i = 0; i < 16; i++){
-
-			while(board[i] == 0){
-				var rand = Math.floor(Math.random() * 8)
-				if(numUsos[rand] < 2){
-					board[i] = GuideConv[rand];
-					numUsos[rand]++;
-				}
-			}
-
-		}
-		this.draw();
+		for(i = 0; i < 16; i++)
+			this.board[i] = new MemoryGameCard( Math.trunc(i/2))
+		this.loop();
 
 	}
 
 	this.draw = function(){
-		gs.drawMessage("Playing");
+		this.GraphicServer.drawMessage("Playing");
 		for (i = 0; i < 16; i++){
-			gs.draw( board[i] , i)
+			this.board[i].draw(this.GraphicServer, i);
 		}
 	}
 
@@ -46,28 +40,23 @@ MemoryGame = function(gs) {
 			, 16);
 	}
 
-	this.onClick = function(){
-
-
-	}
-
-	this.randomInit = function(){
-
-		var numUsos = [0,0,0,0,0,0,0,0];
-
-		for(i = 0; i < 16; i++){
-
-			while(board[i] == undefined){
-				var rand = Math.floor(Math.random() * 8)
-				if(numUsos[rand] < 2){
-					board[i] = GuideConv[rand];
-					numUsos[rand]++;
-				}
-			}
-
-		}
+	this.onClick = function(cardId){
+			//El cardId la pos del array a la que pertenece la carta que pulsas-
+			
 
 	}
+
+	this.shuffle = function (a){
+	    
+	    var j, x, i;
+	    for (i = a.length - 1; i > 0; i--) {
+	        j = Math.floor(Math.random() * (i + 1));
+	        x = a[i];
+	        a[i] = a[j];
+	        a[j] = x;
+	    }
+
+    }
 
 };
 
@@ -81,28 +70,40 @@ MemoryGame = function(gs) {
  */
 MemoryGameCard = function(id) {
 
-	this.MemoryGameCard = function(sprite){
+	var Sprite = id;
+	var Flipped = false;
+	var Found = false;
 
-
-	}
+	
 
 	this.flip = function(){
 
+		if (this.Flipped)
+			this.Flipped = false;
+		else
+			this.Flipped = true;
 
 	}
 
 	this.found = function(){
 
+		this.Found = true;
 
 	}
 
 	this.compareTo = function(otherCard){
 
+		if (this.Card === otherCard.Card)
+			return true;
 
 	}
 
 	this.draw = function(gs, pos){
 
+		if(this.Flipped)
+			gs.draw(this.Card, pos);
+		else
+			gs.draw("back", pos);
 
 	}
 };
