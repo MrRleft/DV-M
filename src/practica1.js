@@ -20,11 +20,13 @@ MemoryGame = function(gs) {
 	this.A_Card_is_Flipped = false;
 	this.CurrentFlipped = -1;
 	this.ParFound = false;
+	var idInterval;
 
 	this.initGame = function(){
 		
 		for(i = 0; i < 16; i++)
-			this.board[i] = new MemoryGameCard(GuideConv[Math.trunc(i/2)])
+			this.board[i] = new MemoryGameCard(GuideConv[Math.trunc(i/2)]);
+		this.shuffle(this.board);
 		this.loop();
 
 	}
@@ -33,7 +35,7 @@ MemoryGame = function(gs) {
 
 		if(this.totalScore === 8)
 			this.GraphicServer.drawMessage(Messages[2]);
-		else if(!this.ParFound && this.CurrentFlipped !== -1)
+		else if(!this.A_Card_is_Flipped && this.CurrentFlipped !== -1)
 			this.GraphicServer.drawMessage(Messages[0]);
 		else if(this.CurrentFlipped === -1)
 			this.GraphicServer.drawMessage(Messages[3]);
@@ -65,16 +67,16 @@ MemoryGame = function(gs) {
 
 				if (this.board[cardId].compareTo(this.board[this.CurrentFlipped])){
 
-					this.ParFound = true
+					this.ParFound = true;
 					this.A_Card_is_Flipped = false;
 					this.totalScore++;
 
 				}
 				else{
-
-					this.ParFound = false;
-					this.board[cardId].flip();
-					this.board[this.CurrentFlipped].flip();
+					var that = this;
+					var idInterval = setInterval(function(){
+						that.showCards()}, 300);
+					
 				}
 				this.A_Card_is_Flipped = false;
 			}
@@ -83,6 +85,14 @@ MemoryGame = function(gs) {
 				this.A_Card_is_Flipped = true;
 				this.CurrentFlipped = cardId;
 			}
+		}
+
+		this.showCards = function(){
+
+			this.ParFound = false;
+			this.board[cardId].flip();
+			this.board[this.CurrentFlipped].flip();
+			window.clearInterval(idInterval);
 		}
 	}
 
