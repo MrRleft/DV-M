@@ -20,7 +20,8 @@ MemoryGame = function(gs) {
 	this.A_Card_is_Flipped = false;
 	this.CurrentFlipped = -1;
 	this.ParFound = false;
-	var idInterval;
+	this.failedSearch = false;
+
 
 	this.initGame = function(){
 		
@@ -35,7 +36,7 @@ MemoryGame = function(gs) {
 
 		if(this.totalScore === 8)
 			this.GraphicServer.drawMessage(Messages[2]);
-		else if(!this.A_Card_is_Flipped && this.CurrentFlipped !== -1)
+		else if(this.failedSearch)
 			this.GraphicServer.drawMessage(Messages[0]);
 		else if(this.CurrentFlipped === -1)
 			this.GraphicServer.drawMessage(Messages[3]);
@@ -67,15 +68,18 @@ MemoryGame = function(gs) {
 
 				if (this.board[cardId].compareTo(this.board[this.CurrentFlipped])){
 
+					this.failedSearch = false;
 					this.ParFound = true;
 					this.A_Card_is_Flipped = false;
 					this.totalScore++;
 
 				}
 				else{
+
+					this.failedSearch = true;
 					var that = this;
-					var idInterval = setInterval(function(){
-						that.showCards()}, 300);
+					setTimeout(function(){
+						that.showCards()}, 350);
 					
 				}
 				this.A_Card_is_Flipped = false;
@@ -92,7 +96,6 @@ MemoryGame = function(gs) {
 			this.ParFound = false;
 			this.board[cardId].flip();
 			this.board[this.CurrentFlipped].flip();
-			window.clearInterval(idInterval);
 		}
 	}
 
